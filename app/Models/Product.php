@@ -1,0 +1,26 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Product extends Model
+{
+    protected $fillable = [
+        'name',
+        'sku',
+        'category',
+        'purchase_price',
+        'selling_price',
+        'stock_quantity',
+        'description',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'purchase_price' => 'decimal:2',
+        'selling_price' => 'decimal:2',
+        'stock_quantity' => 'decimal:2',
+        'is_active' => 'boolean',
+    ];
+}
