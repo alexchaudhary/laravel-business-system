@@ -17,7 +17,11 @@ class InventoryController extends Controller
         $totalStockUnits = $products->sum('stock_quantity');
 
         // Products with low stock
-        $lowStockProducts = $products->where('stock_quantity', '<=', 5);
+        // Each product uses its own low_stock_threshold
+        $lowStockProducts = $products->filter(function ($product) {
+            return $product->stock_quantity > 0
+                && $product->stock_quantity <= $product->low_stock_threshold;
+        });
 
         // Total stock value based on purchase price
         $totalStockValue = $products->sum(function ($product) {

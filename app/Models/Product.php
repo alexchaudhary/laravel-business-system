@@ -13,6 +13,7 @@ class Product extends Model
         'purchase_price',
         'selling_price',
         'stock_quantity',
+        'low_stock_threshold',
         'description',
         'is_active',
     ];
@@ -21,6 +22,8 @@ class Product extends Model
         'purchase_price' => 'decimal:2',
         'selling_price' => 'decimal:2',
         'stock_quantity' => 'decimal:2',
+        'low_stock_threshold' => 'decimal:2',
         'is_active' => 'boolean',
     ];
 }
+

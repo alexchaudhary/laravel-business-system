@@ -67,6 +67,12 @@
                                     value="{{ old('category') }}"
                                     class="w-full rounded-md border-gray-300"
                                 >
+
+                                @error('category')
+                                    <p class="text-red-600 text-sm mt-1">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
                             </div>
 
                             <!-- Stock Quantity -->
@@ -80,10 +86,34 @@
                                     name="stock_quantity"
                                     value="{{ old('stock_quantity', 0) }}"
                                     min="0"
+                                    step="0.01"
                                     class="w-full rounded-md border-gray-300"
                                 >
 
                                 @error('stock_quantity')
+                                    <p class="text-red-600 text-sm mt-1">
+                                        {{ $message }}
+                                    </p>
+                                @enderror
+                            </div>
+
+                            <!-- Low Stock Threshold -->
+                            <div>
+                                <label class="block font-medium mb-2">
+                                    Low Stock Threshold
+                                </label>
+
+                                <input
+                                    type="number"
+                                    name="low_stock_threshold"
+                                    value="{{ old('low_stock_threshold', 5) }}"
+                                    min="0"
+                                    step="0.01"
+                                    class="w-full rounded-md border-gray-300"
+                                    required
+                                >
+
+                                @error('low_stock_threshold')
                                     <p class="text-red-600 text-sm mt-1">
                                         {{ $message }}
                                     </p>
@@ -147,6 +177,12 @@
                                 rows="4"
                                 class="w-full rounded-md border-gray-300"
                             >{{ old('description') }}</textarea>
+
+                            @error('description')
+                                <p class="text-red-600 text-sm mt-1">
+                                    {{ $message }}
+                                </p>
+                            @enderror
                         </div>
 
                         <!-- Status -->
@@ -156,7 +192,7 @@
                                     type="checkbox"
                                     name="is_active"
                                     value="1"
-                                    checked
+                                    {{ old('is_active', true) ? 'checked' : '' }}
                                     class="rounded border-gray-300"
                                 >
 

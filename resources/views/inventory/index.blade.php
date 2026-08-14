@@ -51,12 +51,14 @@
                     </div>
 
                     <div class="text-3xl font-bold text-red-600 mt-2">
-                        {{ $lowStockProducts->where('stock_quantity', '>', 0)->count() }}
+                        {{ $lowStockProducts->filter(function ($product) {
+                            return (float) $product->stock_quantity > 0
+                                && (float) $product->stock_quantity <= (float) $product->low_stock_threshold;
+                        })->count() }}
                     </div>
                 </div>
 
             </div>
-
 
             {{-- Inventory Table --}}
             <div class="bg-white shadow-sm sm:rounded-lg">
@@ -76,13 +78,14 @@
                             </p>
                         </div>
 
-                        <a href="{{ route('products.index') }}"
-                           class="inline-flex justify-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                        <a
+                            href="{{ route('products.index') }}"
+                            class="inline-flex justify-center px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                        >
                             Manage Products
                         </a>
 
                     </div>
-
 
                     {{-- Search & Filter --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
@@ -90,8 +93,10 @@
                         {{-- Search --}}
                         <div class="md:col-span-2">
 
-                            <label for="inventorySearch"
-                                   class="block text-sm font-medium text-gray-700 mb-1">
+                            <label
+                                for="inventorySearch"
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                            >
                                 Search Product
                             </label>
 
@@ -104,12 +109,13 @@
 
                         </div>
 
-
                         {{-- Status Filter --}}
                         <div>
 
-                            <label for="statusFilter"
-                                   class="block text-sm font-medium text-gray-700 mb-1">
+                            <label
+                                for="statusFilter"
+                                class="block text-sm font-medium text-gray-700 mb-1"
+                            >
                                 Filter by Status
                             </label>
 
@@ -127,8 +133,7 @@
 
                     </div>
 
-
-                    {{-- Table --}}
+                    {{-- Inventory Table --}}
                     <div class="overflow-x-auto">
 
                         <table class="min-w-full border border-gray-300">
@@ -169,18 +174,18 @@
 
                             </thead>
 
-
                             <tbody id="inventoryTableBody">
 
                                 @forelse ($products as $product)
 
                                     @php
                                         $stock = (float) $product->stock_quantity;
+                                        $threshold = (float) $product->low_stock_threshold;
 
                                         if ($stock <= 0) {
                                             $status = 'out-of-stock';
                                             $statusText = 'Out of Stock';
-                                        } elseif ($stock <= 5) {
+                                        } elseif ($stock <= $threshold) {
                                             $status = 'low-stock';
                                             $statusText = 'Low Stock';
                                         } else {
@@ -191,7 +196,6 @@
                                         $stockValue =
                                             $stock * (float) $product->purchase_price;
                                     @endphp
-
 
                                     <tr
                                         class="inventory-row hover:bg-gray-50"
@@ -205,12 +209,10 @@
                                             {{ $product->name }}
                                         </td>
 
-
                                         {{-- SKU --}}
                                         <td class="border px-4 py-3">
                                             {{ $product->sku ?? '-' }}
                                         </td>
-
 
                                         {{-- Purchase Price --}}
                                         <td class="border px-4 py-3 text-right">
@@ -218,26 +220,22 @@
                                             {{ number_format((float) $product->purchase_price, 2) }}
                                         </td>
 
-
                                         {{-- Selling Price --}}
                                         <td class="border px-4 py-3 text-right">
                                             Rs.
                                             {{ number_format((float) $product->selling_price, 2) }}
                                         </td>
 
-
                                         {{-- Stock --}}
                                         <td class="border px-4 py-3 text-right font-bold">
                                             {{ number_format($stock, 2) }}
                                         </td>
-
 
                                         {{-- Stock Value --}}
                                         <td class="border px-4 py-3 text-right font-semibold">
                                             Rs.
                                             {{ number_format($stockValue, 2) }}
                                         </td>
-
 
                                         {{-- Status --}}
                                         <td class="border px-4 py-3 text-center">
@@ -248,7 +246,7 @@
                                                     Out of Stock
                                                 </span>
 
-                                            @elseif ($stock <= 5)
+                                            @elseif ($stock <= $threshold)
 
                                                 <span class="inline-flex px-3 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-700">
                                                     Low Stock
@@ -270,26 +268,25 @@
 
                                     <tr>
 
-                                        <td colspan="7"
-                                            class="border px-4 py-8 text-center text-gray-500">
-
+                                        <td
+                                            colspan="7"
+                                            class="border px-4 py-8 text-center text-gray-500"
+                                        >
                                             No products found.
-
                                         </td>
 
                                     </tr>
 
                                 @endforelse
 
-
                                 {{-- No Search Result --}}
                                 <tr id="noSearchResult" class="hidden">
 
-                                    <td colspan="7"
-                                        class="border px-4 py-8 text-center text-gray-500">
-
+                                    <td
+                                        colspan="7"
+                                        class="border px-4 py-8 text-center text-gray-500"
+                                    >
                                         No matching products found.
-
                                     </td>
 
                                 </tr>
@@ -306,7 +303,6 @@
 
         </div>
     </div>
-
 
     {{-- Search & Filter Script --}}
     <script>
@@ -341,7 +337,6 @@
                     if (matchesSearch && matchesStatus) {
 
                         row.style.display = '';
-
                         visibleRows++;
 
                     } else {
@@ -351,7 +346,6 @@
                     }
 
                 });
-
 
                 if (visibleRows === 0 && rows.length > 0) {
 
@@ -364,7 +358,6 @@
                 }
 
             }
-
 
             searchInput.addEventListener('input', filterInventory);
 

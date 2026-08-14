@@ -87,6 +87,29 @@
                             @enderror
                         </div>
 
+                        {{-- Low Stock Threshold --}}
+                        <div class="mb-4">
+                            <label class="block font-medium text-sm text-gray-700">
+                                Low Stock Threshold
+                            </label>
+
+                            <input
+                                type="number"
+                                name="low_stock_threshold"
+                                value="{{ old('low_stock_threshold', $product->low_stock_threshold) }}"
+                                min="0"
+                                step="0.01"
+                                class="block mt-1 w-full border-gray-300 rounded-md shadow-sm"
+                                required
+                            >
+
+                            @error('low_stock_threshold')
+                                <p class="text-red-600 text-sm mt-1">
+                                    {{ $message }}
+                                </p>
+                            @enderror
+                        </div>
+
                         <div class="mb-4">
                             <label class="block font-medium text-sm text-gray-700">
                                 Purchase Price
@@ -160,6 +183,7 @@
                         </div>
 
                         <div class="flex items-center gap-3">
+
                             <a
                                 href="{{ route('products.index') }}"
                                 class="px-4 py-2 bg-gray-200 text-gray-800 rounded-md"
@@ -173,6 +197,7 @@
                             >
                                 Update Product
                             </button>
+
                         </div>
 
                     </form>
@@ -183,3 +208,4 @@
         </div>
     </div>
 </x-app-layout>
+
