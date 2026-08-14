@@ -7,6 +7,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
+use App\Http\Controllers\InventoryController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -26,6 +27,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('purchases', PurchaseController::class);
 
     Route::resource('sales', SaleController::class);
+
+    Route::get('/inventory', [InventoryController::class, 'index'])
+    ->name('inventory.index');
 
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
