@@ -8,6 +8,13 @@
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
+            {{-- Success Message --}}
+            @if (session('success'))
+                <div class="mb-6 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                    {{ session('success') }}
+                </div>
+            @endif
+
             {{-- Summary Cards --}}
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
 
@@ -60,6 +67,7 @@
 
             </div>
 
+
             {{-- Inventory Table --}}
             <div class="bg-white shadow-sm sm:rounded-lg">
 
@@ -87,6 +95,7 @@
 
                     </div>
 
+
                     {{-- Search & Filter --}}
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5">
 
@@ -109,6 +118,7 @@
 
                         </div>
 
+
                         {{-- Status Filter --}}
                         <div>
 
@@ -123,15 +133,27 @@
                                 id="statusFilter"
                                 class="w-full border-gray-300 rounded-md shadow-sm focus:border-blue-500 focus:ring-blue-500"
                             >
-                                <option value="all">All Status</option>
-                                <option value="in-stock">In Stock</option>
-                                <option value="low-stock">Low Stock</option>
-                                <option value="out-of-stock">Out of Stock</option>
+                                <option value="all">
+                                    All Status
+                                </option>
+
+                                <option value="in-stock">
+                                    In Stock
+                                </option>
+
+                                <option value="low-stock">
+                                    Low Stock
+                                </option>
+
+                                <option value="out-of-stock">
+                                    Out of Stock
+                                </option>
                             </select>
 
                         </div>
 
                     </div>
+
 
                     {{-- Inventory Table --}}
                     <div class="overflow-x-auto">
@@ -142,37 +164,50 @@
 
                                 <tr>
 
+                                    {{-- Product --}}
                                     <th class="border px-4 py-3 text-left">
                                         Product
                                     </th>
 
+                                    {{-- SKU --}}
                                     <th class="border px-4 py-3 text-left">
                                         SKU
                                     </th>
 
+                                    {{-- Purchase Price --}}
                                     <th class="border px-4 py-3 text-right">
                                         Purchase Price
                                     </th>
 
+                                    {{-- Selling Price --}}
                                     <th class="border px-4 py-3 text-right">
                                         Selling Price
                                     </th>
 
+                                    {{-- Stock --}}
                                     <th class="border px-4 py-3 text-right">
                                         Stock
                                     </th>
 
+                                    {{-- Stock Value --}}
                                     <th class="border px-4 py-3 text-right">
                                         Stock Value
                                     </th>
 
+                                    {{-- Status --}}
                                     <th class="border px-4 py-3 text-center">
                                         Status
+                                    </th>
+
+                                    {{-- Action --}}
+                                    <th class="border px-4 py-3 text-center">
+                                        Action
                                     </th>
 
                                 </tr>
 
                             </thead>
+
 
                             <tbody id="inventoryTableBody">
 
@@ -193,9 +228,9 @@
                                             $statusText = 'In Stock';
                                         }
 
-                                        $stockValue =
-                                            $stock * (float) $product->purchase_price;
+                                        $stockValue = $stock * (float) $product->purchase_price;
                                     @endphp
+
 
                                     <tr
                                         class="inventory-row hover:bg-gray-50"
@@ -209,10 +244,12 @@
                                             {{ $product->name }}
                                         </td>
 
+
                                         {{-- SKU --}}
                                         <td class="border px-4 py-3">
                                             {{ $product->sku ?? '-' }}
                                         </td>
+
 
                                         {{-- Purchase Price --}}
                                         <td class="border px-4 py-3 text-right">
@@ -220,22 +257,26 @@
                                             {{ number_format((float) $product->purchase_price, 2) }}
                                         </td>
 
+
                                         {{-- Selling Price --}}
                                         <td class="border px-4 py-3 text-right">
                                             Rs.
                                             {{ number_format((float) $product->selling_price, 2) }}
                                         </td>
 
+
                                         {{-- Stock --}}
                                         <td class="border px-4 py-3 text-right font-bold">
                                             {{ number_format($stock, 2) }}
                                         </td>
+
 
                                         {{-- Stock Value --}}
                                         <td class="border px-4 py-3 text-right font-semibold">
                                             Rs.
                                             {{ number_format($stockValue, 2) }}
                                         </td>
+
 
                                         {{-- Status --}}
                                         <td class="border px-4 py-3 text-center">
@@ -262,14 +303,29 @@
 
                                         </td>
 
+
+                                        {{-- Action --}}
+                                        <td class="border px-4 py-3 text-center">
+
+                                            <a
+                                                href="{{ route('stock-adjustments.create', $product) }}"
+                                                class="inline-flex items-center px-3 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            >
+                                                Adjust Stock
+                                            </a>
+
+                                        </td>
+
                                     </tr>
+
 
                                 @empty
 
+                                    {{-- No Products --}}
                                     <tr>
 
                                         <td
-                                            colspan="7"
+                                            colspan="8"
                                             class="border px-4 py-8 text-center text-gray-500"
                                         >
                                             No products found.
@@ -279,11 +335,12 @@
 
                                 @endforelse
 
+
                                 {{-- No Search Result --}}
                                 <tr id="noSearchResult" class="hidden">
 
                                     <td
-                                        colspan="7"
+                                        colspan="8"
                                         class="border px-4 py-8 text-center text-gray-500"
                                     >
                                         No matching products found.
@@ -304,6 +361,7 @@
         </div>
     </div>
 
+
     {{-- Search & Filter Script --}}
     <script>
         document.addEventListener('DOMContentLoaded', function () {
@@ -313,6 +371,7 @@
             const rows = document.querySelectorAll('.inventory-row');
             const noSearchResult = document.getElementById('noSearchResult');
 
+
             function filterInventory() {
 
                 const searchValue = searchInput.value.toLowerCase().trim();
@@ -320,19 +379,23 @@
 
                 let visibleRows = 0;
 
+
                 rows.forEach(function (row) {
 
                     const productName = row.dataset.product;
                     const sku = row.dataset.sku;
                     const status = row.dataset.status;
 
+
                     const matchesSearch =
                         productName.includes(searchValue) ||
                         sku.includes(searchValue);
 
+
                     const matchesStatus =
                         selectedStatus === 'all' ||
                         status === selectedStatus;
+
 
                     if (matchesSearch && matchesStatus) {
 
@@ -347,6 +410,7 @@
 
                 });
 
+
                 if (visibleRows === 0 && rows.length > 0) {
 
                     noSearchResult.classList.remove('hidden');
@@ -359,6 +423,7 @@
 
             }
 
+
             searchInput.addEventListener('input', filterInventory);
 
             statusFilter.addEventListener('change', filterInventory);
@@ -367,4 +432,3 @@
     </script>
 
 </x-app-layout>
-

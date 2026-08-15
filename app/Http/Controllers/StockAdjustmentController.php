@@ -3,70 +3,77 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
-use App\Models\StockAdjustment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 
 class StockAdjustmentController extends Controller
 {
-    public function index()
+    /**
+     * Show stock adjustment form.
+     */
+    public function create(Product $product)
     {
-        $adjustments = StockAdjustment::with('product')
-            ->latest()
-            ->get();
-
-        return view('stock-adjustments.index', compact('adjustments'));
+        return view('stock-adjustments.create', compact('product'));
     }
 
-    public function create()
-    {
-        $products = Product::orderBy('name')->get();
-
-        return view('stock-adjustments.create', compact('products'));
-    }
-
-    public function store(Request $request)
+    /**
+     * Store stock adjustment.
+     */
+    public function store(Request $request, Product $product)
     {
         $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'type' => 'required|in:in,out',
-            'quantity' => 'required|numeric|min:0.01',
-            'note' => 'nullable|string|max:1000',
+            'type' => [
+                'required',
+                'in:increase,decrease',
+            ],
+
+            'quantity' => [
+                'required',
+                'numeric',
+                'min:0.01',
+            ],
+
+            'reason' => [
+                'nullable',
+                'string',
+                'max:500',
+            ],
         ]);
 
-        DB::transaction(function () use ($validated) {
-            $product = Product::lockForUpdate()
-                ->findOrFail($validated['product_id']);
+        DB::transaction(function () use ($validated, $product) {
 
-            $stockBefore = (float) $product->stock_quantity;
+            $product = Product::lockForUpdate()->findOrFail($product->id);
+
+            $currentStock = (float) $product->stock_quantity;
             $quantity = (float) $validated['quantity'];
 
-            if ($validated['type'] === 'in') {
-                $stockAfter = $stockBefore + $quantity;
-            } else {
-                $stockAfter = $stockBefore - $quantity;
+            if ($validated['type'] === 'increase') {
 
-                if ($stockAfter < 0) {
-                    abort(422, 'Insufficient stock.');
+                $newStock = $currentStock + $quantity;
+
+            } else {
+
+                if ($quantity > $currentStock) {
+                    throw ValidationException::withMessages([
+                        'quantity' => "Cannot decrease more than available stock. "
+                            . "Available stock: {$currentStock}.",
+                    ]);
                 }
+
+                $newStock = $currentStock - $quantity;
             }
 
-            StockAdjustment::create([
-                'product_id' => $product->id,
-                'type' => $validated['type'],
-                'quantity' => $quantity,
-                'stock_before' => $stockBefore,
-                'stock_after' => $stockAfter,
-                'note' => $validated['note'] ?? null,
-            ]);
-
             $product->update([
-                'stock_quantity' => $stockAfter,
+                'stock_quantity' => $newStock,
             ]);
         });
 
         return redirect()
-            ->route('stock-adjustments.index')
-            ->with('success', 'Stock adjusted successfully.');
+            ->route('inventory.index')
+            ->with(
+                'success',
+                'Stock adjusted successfully.'
+            );
     }
 }
