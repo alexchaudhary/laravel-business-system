@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Product extends Model
 {
@@ -25,5 +26,9 @@ class Product extends Model
         'low_stock_threshold' => 'decimal:2',
         'is_active' => 'boolean',
     ];
-}
 
+    public function stockAdjustments(): HasMany
+    {
+        return $this->hasMany(StockAdjustment::class);
+    }
+}

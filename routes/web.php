@@ -8,6 +8,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\StockAdjustmentController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -30,6 +31,9 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/inventory', [InventoryController::class, 'index'])
     ->name('inventory.index');
+
+    Route::resource('stock-adjustments', StockAdjustmentController::class)
+    ->only(['index', 'create', 'store']);
 
     Route::get('/profile', [ProfileController::class, 'edit'])
         ->name('profile.edit');
