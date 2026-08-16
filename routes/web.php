@@ -13,6 +13,7 @@ use App\Http\Controllers\StockAdjustmentController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ReportController;
+use App\Http\Controllers\UserController;
 
 
 /*
@@ -89,13 +90,24 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('sales', SaleController::class);
 
-/*
-|--------------------------------------------------------------------------
-| Expenses
-|--------------------------------------------------------------------------
-*/
 
-Route::resource('expenses', ExpenseController::class);
+    /*
+    |--------------------------------------------------------------------------
+    | Expenses
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource('expenses', ExpenseController::class);
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Users
+    |--------------------------------------------------------------------------
+    */
+
+    Route::resource('users', UserController::class);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -111,9 +123,6 @@ Route::resource('expenses', ExpenseController::class);
     |--------------------------------------------------------------------------
     | Stock Adjustments
     |--------------------------------------------------------------------------
-    |
-    | Open adjustment form for a specific product
-    |
     */
 
     Route::get(
@@ -145,8 +154,16 @@ Route::resource('expenses', ExpenseController::class);
         [StockAdjustmentController::class, 'index']
     )->name('stock-adjustments.index');
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Reports
+    |--------------------------------------------------------------------------
+    */
+
     Route::get('/reports', [ReportController::class, 'index'])
-    ->name('reports.index');
+        ->name('reports.index');
+
 
     /*
     |--------------------------------------------------------------------------
@@ -172,3 +189,4 @@ Route::resource('expenses', ExpenseController::class);
 */
 
 require __DIR__ . '/auth.php';
+
