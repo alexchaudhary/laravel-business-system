@@ -23,6 +23,8 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
 
+                  
+
                     <!-- Inventory -->
                     <x-nav-link
                         :href="route('inventory.index')"
@@ -30,7 +32,14 @@
                     >
                         {{ __('Inventory') }}
                     </x-nav-link>
-
+                     
+                    <!-- Reports -->
+               <x-nav-link
+                 :href="route('reports.index')"
+                 :active="request()->routeIs('reports.index')"
+                 >
+                 {{ __('Reports') }}
+                </x-nav-link>
                 </div>
             </div>
 
@@ -159,7 +168,14 @@
             >
                 {{ __('Inventory') }}
             </x-responsive-nav-link>
-
+           
+            <!-- Inventory -->
+<x-responsive-nav-link
+    :href="route('inventory.index')"
+    :active="request()->routeIs('inventory.index')"
+>
+    {{ __('Inventory') }}
+</x-responsive-nav-link>
         </div>
 
         <!-- Responsive Settings Options -->

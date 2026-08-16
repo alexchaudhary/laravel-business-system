@@ -11,6 +11,8 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\SaleController;
 use App\Http\Controllers\StockAdjustmentController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\ExpenseController;
+use App\Http\Controllers\ReportController;
 
 
 /*
@@ -87,6 +89,13 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('sales', SaleController::class);
 
+/*
+|--------------------------------------------------------------------------
+| Expenses
+|--------------------------------------------------------------------------
+*/
+
+Route::resource('expenses', ExpenseController::class);
 
     /*
     |--------------------------------------------------------------------------
@@ -136,6 +145,8 @@ Route::middleware('auth')->group(function () {
         [StockAdjustmentController::class, 'index']
     )->name('stock-adjustments.index');
 
+    Route::get('/reports', [ReportController::class, 'index'])
+    ->name('reports.index');
 
     /*
     |--------------------------------------------------------------------------
