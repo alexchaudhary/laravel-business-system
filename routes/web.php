@@ -16,6 +16,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\AdminController;
 
 
 /*
@@ -50,15 +51,41 @@ Route::middleware('auth')->group(function () {
 
     /*
     |--------------------------------------------------------------------------
+    | Admin Panel
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get('/admin', [AdminController::class, 'index'])
+        ->middleware('admin')
+        ->name('admin.index');
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Customers
     |--------------------------------------------------------------------------
     */
 
     Route::resource('customers', CustomerController::class);
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Invoices
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource('invoices', InvoiceController::class);
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payments
+    |--------------------------------------------------------------------------
+    */
+
     Route::resource('payments', PaymentController::class);
+
 
     /*
     |--------------------------------------------------------------------------
@@ -111,7 +138,8 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class)
+    ->middleware('admin');
 
 
     /*
@@ -194,4 +222,3 @@ Route::middleware('auth')->group(function () {
 */
 
 require __DIR__ . '/auth.php';
-
