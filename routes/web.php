@@ -14,6 +14,7 @@ use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvoiceController;
 
 
 /*
@@ -54,6 +55,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('customers', CustomerController::class);
 
+    Route::resource('invoices', InvoiceController::class);
 
     /*
     |--------------------------------------------------------------------------
