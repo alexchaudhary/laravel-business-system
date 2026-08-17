@@ -111,8 +111,8 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::resource('purchases', PurchaseController::class);
-
+    Route::resource('purchases', PurchaseController::class)
+    ->middleware('admin');
 
     /*
     |--------------------------------------------------------------------------
@@ -129,8 +129,8 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::resource('expenses', ExpenseController::class);
-
+    Route::resource('expenses', ExpenseController::class)
+      ->middleware('admin');
 
     /*
     |--------------------------------------------------------------------------
@@ -148,8 +148,9 @@ Route::middleware('auth')->group(function () {
     |--------------------------------------------------------------------------
     */
 
-    Route::get('/inventory', [InventoryController::class, 'index'])
-        ->name('inventory.index');
+   Route::get('/inventory', [InventoryController::class, 'index'])
+    ->middleware('admin')
+    ->name('inventory.index');
 
 
     /*
@@ -157,23 +158,23 @@ Route::middleware('auth')->group(function () {
     | Stock Adjustments
     |--------------------------------------------------------------------------
     */
-
+     
     Route::get(
-        '/inventory/{product}/adjust-stock',
-        [StockAdjustmentController::class, 'create']
-    )->name('stock-adjustments.create');
-
+    '/inventory/{product}/adjust-stock',
+    [StockAdjustmentController::class, 'create']
+    )->middleware('admin')
+     ->name('stock-adjustments.create');
 
     /*
     |--------------------------------------------------------------------------
     | Save Stock Adjustment
     |--------------------------------------------------------------------------
     */
-
-    Route::post(
-        '/inventory/{product}/adjust-stock',
-        [StockAdjustmentController::class, 'store']
-    )->name('stock-adjustments.store');
+     Route::post(
+    '/inventory/{product}/adjust-stock',
+    [StockAdjustmentController::class, 'store']
+      )->middleware('admin')
+       ->name('stock-adjustments.store');
 
 
     /*
@@ -183,10 +184,10 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get(
-        '/stock-adjustments',
-        [StockAdjustmentController::class, 'index']
-    )->name('stock-adjustments.index');
-
+    '/stock-adjustments',
+    [StockAdjustmentController::class, 'index']
+    )->middleware('admin')
+     ->name('stock-adjustments.index');
 
     /*
     |--------------------------------------------------------------------------
@@ -195,7 +196,8 @@ Route::middleware('auth')->group(function () {
     */
 
     Route::get('/reports', [ReportController::class, 'index'])
-        ->name('reports.index');
+    ->middleware('admin')
+    ->name('reports.index');
 
 
     /*

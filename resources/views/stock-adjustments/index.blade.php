@@ -6,7 +6,7 @@
             </h2>
 
             <a
-                href="{{ route('stock-adjustments.create') }}"
+                href="{{ route('inventory.index') }}"
                 class="px-4 py-2 bg-gray-800 text-white rounded-md hover:bg-gray-700"
             >
                 Adjust Stock
