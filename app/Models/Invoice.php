@@ -45,4 +45,30 @@ class Invoice extends Model
     {
         return $this->hasMany(Payment::class);
     }
+
+    public function updatePaymentStatus(): void
+{
+    $paidAmount = (float) $this->payments()->sum('amount');
+    $totalAmount = (float) $this->total_amount;
+
+    if ($paidAmount <= 0) {
+        $this->update([
+            'status' => 'issued',
+        ]);
+
+        return;
+    }
+
+    if ($paidAmount >= $totalAmount) {
+        $this->update([
+            'status' => 'paid',
+        ]);
+
+        return;
+    }
+
+    $this->update([
+        'status' => 'partially_paid',
+    ]);
+}
 }

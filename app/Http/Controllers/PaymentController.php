@@ -86,7 +86,9 @@ class PaymentController extends Controller
             ],
         ]);
 
-        Payment::create($validated);
+       $payment = Payment::create($validated);
+
+       $payment->invoice->updatePaymentStatus();
 
         return redirect()
             ->route('payments.index')
@@ -175,6 +177,8 @@ class PaymentController extends Controller
 
         $payment->update($validated);
 
+        $payment->invoice->updatePaymentStatus();
+
         return redirect()
             ->route('payments.show', $payment)
             ->with(
@@ -187,14 +191,18 @@ class PaymentController extends Controller
      * Remove the specified payment.
      */
     public function destroy(Payment $payment)
-    {
-        $payment->delete();
+{
+    $invoice = $payment->invoice;
 
-        return redirect()
-            ->route('payments.index')
-            ->with(
-                'success',
-                'Payment deleted successfully.'
-            );
-    }
+    $payment->delete();
+
+    $invoice->updatePaymentStatus();
+
+    return redirect()
+        ->route('payments.index')
+        ->with(
+            'success',
+            'Payment deleted successfully.'
+        );
+}
 }

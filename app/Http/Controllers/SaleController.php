@@ -81,27 +81,52 @@ class SaleController extends Controller
             |--------------------------------------------------------------------------
             */
 
-            if ($validated['status'] === 'completed') {
+           if ($validated['status'] === 'completed') {
 
-                foreach ($validated['items'] as $item) {
+    /*
+    |--------------------------------------------------------------------------
+    | Combine quantities of the same product
+    |--------------------------------------------------------------------------
+    */
 
-                    $product = Product::lockForUpdate()
-                        ->findOrFail($item['product_id']);
+    $requestedQuantities = [];
 
-                    if (
-                        (float) $product->stock_quantity
-                        <
-                        (float) $item['quantity']
-                    ) {
-                        throw ValidationException::withMessages([
-                            'items' => "Insufficient stock for {$product->name}. "
-                                . "Available stock: {$product->stock_quantity}, "
-                                . "requested: {$item['quantity']}.",
-                        ]);
-                    }
-                }
-            }
+    foreach ($validated['items'] as $item) {
 
+        $productId = $item['product_id'];
+        $quantity = (float) $item['quantity'];
+
+        if (!isset($requestedQuantities[$productId])) {
+            $requestedQuantities[$productId] = 0;
+        }
+
+        $requestedQuantities[$productId] += $quantity;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Check combined stock
+    |--------------------------------------------------------------------------
+    */
+
+    foreach ($requestedQuantities as $productId => $quantity) {
+
+        $product = Product::lockForUpdate()
+            ->findOrFail($productId);
+
+        if (
+            (float) $product->stock_quantity
+            <
+            $quantity
+        ) {
+            throw ValidationException::withMessages([
+                'items' => "Insufficient stock for {$product->name}. "
+                    . "Available stock: {$product->stock_quantity}, "
+                    . "requested: {$quantity}.",
+            ]);
+        }
+    }
+}
             /*
             |--------------------------------------------------------------------------
             | Calculate Grand Total
