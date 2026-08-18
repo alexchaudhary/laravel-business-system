@@ -86,9 +86,9 @@ class PaymentController extends Controller
             ],
         ]);
 
-       $payment = Payment::create($validated);
+        $payment = Payment::create($validated);
 
-       $payment->invoice->updatePaymentStatus();
+        $payment->invoice->updatePaymentStatus();
 
         return redirect()
             ->route('payments.index')
@@ -175,9 +175,35 @@ class PaymentController extends Controller
             ],
         ]);
 
+        /*
+         * Keep the original invoice ID before updating.
+         */
+        $oldInvoiceId = $payment->invoice_id;
+
+        /*
+         * Update the payment.
+         */
         $payment->update($validated);
 
-        $payment->invoice->updatePaymentStatus();
+        /*
+         * Recalculate the old invoice when the payment
+         * has been moved to another invoice.
+         */
+        if ($oldInvoiceId !== (int) $validated['invoice_id']) {
+            $oldInvoice = Invoice::findOrFail($oldInvoiceId);
+
+            $oldInvoice->updatePaymentStatus();
+        }
+
+        /*
+         * Always recalculate the new/current invoice
+         * using a fresh database query.
+         */
+        $newInvoice = Invoice::findOrFail(
+            $validated['invoice_id']
+        );
+
+        $newInvoice->updatePaymentStatus();
 
         return redirect()
             ->route('payments.show', $payment)
@@ -191,18 +217,18 @@ class PaymentController extends Controller
      * Remove the specified payment.
      */
     public function destroy(Payment $payment)
-{
-    $invoice = $payment->invoice;
+    {
+        $invoice = $payment->invoice;
 
-    $payment->delete();
+        $payment->delete();
 
-    $invoice->updatePaymentStatus();
+        $invoice->updatePaymentStatus();
 
-    return redirect()
-        ->route('payments.index')
-        ->with(
-            'success',
-            'Payment deleted successfully.'
-        );
-}
+        return redirect()
+            ->route('payments.index')
+            ->with(
+                'success',
+                'Payment deleted successfully.'
+            );
+    }
 }
