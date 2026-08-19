@@ -17,6 +17,28 @@ The project focuses on real-world business workflows, role-based authorization, 
 - **Testing:** PHPUnit / Laravel Feature Tests
 - **Version Control:** Git & GitHub
 
+## 📸 Application Screenshots
+
+| Dashboard | Admin Panel |
+| :---: | :---: |
+| ![Dashboard](screenshots/Dashboard.png) | ![Admin Panel](screenshots/admin.png) |
+
+| Inventory Management | Product Management |
+| :---: | :---: |
+| ![Inventory](screenshots/inventory.png) | ![Products](screenshots/products.png) |
+
+| Customer Management | Purchases |
+| :---: | :---: |
+| ![Customers](screenshots/customers.png) | ![Purchases](screenshots/purchases.png) |
+
+| Invoices | Payments |
+| :---: | :---: |
+| ![Invoices](screenshots/invoices.png) | ![Payments](screenshots/payments.png) |
+
+| Expenses |
+| :---: |
+| ![Expenses](screenshots/expenses.png) |
+
 ## 🚀 Features
 
 ### 🔐 Authentication & Authorization
